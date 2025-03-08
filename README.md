@@ -26,7 +26,7 @@ This project is a **Django REST API** for managing event ticketing. It allows us
 
 ### **1️⃣ Clone the Repository**
 ```bash
-git clone https://github.com/your-username/event-ticketing-api.git
+git clone https://github.com/swapnilj01/event-ticketing-api.git
 cd event-ticketing-api
 ```
 

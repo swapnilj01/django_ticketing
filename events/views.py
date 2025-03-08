@@ -48,6 +48,16 @@ class EventAttendanceView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = EventAttendanceSerializer
 
+    def delete(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id)
+
+        attendance = EventAttendance.objects.filter(user=request.user, event=event).first()
+        if not attendance:
+            return Response({'error': 'You are not attending this event'}, status=status.HTTP_400_BAD_REQUEST)
+
+        attendance.delete()
+        return Response({'message': 'You have unattended the event'}, status=status.HTTP_200_OK)
+    
     def post(self, request, event_id):
         event = get_object_or_404(Event, id=event_id)
         
@@ -88,6 +98,9 @@ class EventCreateView(generics.CreateAPIView):
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+    
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
 # Admin: Delete an event
 class EventDeleteView(generics.DestroyAPIView):
@@ -99,7 +112,15 @@ class EventDeleteView(generics.DestroyAPIView):
         responses={204: "Event deleted successfully", 403: "Forbidden: Only Admins can delete events."},
     )
     def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
+        instance = self.get_object()
+
+        event_title = instance.title 
+        self.perform_destroy(instance)
+
+        return Response(
+            {"message": f'Event "{event_title}" deleted successfully'},
+            status=status.HTTP_200_OK 
+        )
     
 # Custom Token Serializer (Override Default JWT Login to Accept Email)
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

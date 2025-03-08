@@ -25,7 +25,8 @@ class UserSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = '__all__'
+        fields = ['id', 'title', 'description', 'date', 'ticket_price', 'created_by']
+        read_only_fields = ['created_by']
 
 # Attendance Serializer
 class EventAttendanceSerializer(serializers.ModelSerializer):

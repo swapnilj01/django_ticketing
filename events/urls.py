@@ -14,6 +14,8 @@ urlpatterns = [
     # Event routes
     path('events/', EventListView.as_view(), name='event-list'),
     path('events/<int:pk>/', EventDetailView.as_view(), name='event-detail'),
+
+    # Admin Routes
     path('events/create/', EventCreateView.as_view(), name='event-create'),
     path('events/<int:pk>/delete/', EventDeleteView.as_view(), name='event-delete'),
 
